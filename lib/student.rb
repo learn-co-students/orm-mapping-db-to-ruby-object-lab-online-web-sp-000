@@ -30,6 +30,11 @@ class Student
 
     row = DB[:conn].execute(sql, name).flatten
     self.new_from_db(row)
+=begin
+    DB[:conn].execute(sql,name).map do |row|
+      self.new_from_db(row)
+    end.first
+=end
   end
 
   def self.all_students_in_grade_9
@@ -61,6 +66,7 @@ class Student
     SELECT *
     FROM students
     WHERE grade = ?
+    ORDER BY students.id
     LIMIT ?
     SQL
 
@@ -74,6 +80,7 @@ class Student
     SELECT *
     FROM students
     WHERE grade = ?
+    ORDER BY students.id
     LIMIT ?
     SQL
 
