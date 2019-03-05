@@ -77,19 +77,36 @@ class Student
   end
   
   def self.first_X_students_in_grade_10(x)
-    all = []
+    grade_10_array = []
     sql = <<-SQL
       SELECT *
       FROM students
       WHERE grade = 10
     SQL
     
-    until all.size > x
-      DB[:conn].execute(sql).each do |row|
-        all << self.new_from_db(row)
+   
+    DB[:conn].execute(sql).each do |row|
+      while grade_10_array.size < x
+        grade_10_array << self.new_from_db(row)
       end
     end
-    all
+    grade_10_array
+  end
+  
+  def self.first_student_in_grade_10
+    self.first_X_students_in_grade_10(1).first
+  end
+  
+  def self.all_students_in_grade_X(x)
+    grade_x_array = []
+    sql = <<-SQL
+      SELECT *
+      FROM students
+      WHERE grade = ?
+    SQL
+    
+    DB[:conn].execute(sql, x).each {|row| grade_x_array << self.new_from_db(row)}
+    grade_x_array
   end
   
   def self.create_table
