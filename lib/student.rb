@@ -74,7 +74,16 @@ class Student
             SQL
    row= DB[:conn].execute(sql,10).first
     self.new_from_db(row)
-    
+  end
+  
+  def self.all_students_in_grade_(x)
+    sql = <<-SQL 
+            SELECT * FROM students
+            WHERE grade=?
+            SQL
+   DB[:conn].execute(sql,x).map do |row|
+      self.new_from_db(row)
+  end
   end
   
   def save
