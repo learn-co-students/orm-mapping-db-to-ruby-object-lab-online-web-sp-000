@@ -2,12 +2,41 @@ class Student
   attr_accessor :id, :name, :grade
 
   def self.new_from_db(row)
-    # create a new Student object given a row from the database
     new_student = self.new
     new_student.id = row[0]
     new_student.name = row[1]
     new_student.grade = row[2]
     new_student
+  end
+
+  def self.all_students_in_grade_X(x)
+    sql = <<-SQL
+      SELECT * FROM students WHERE grade = ?
+    SQL
+    DB[:conn].execute(sql, x).collect do |r|
+      self.new_from_db(r)
+    end
+  end
+
+  def self.first_student_in_grade_10
+    sql = <<-SQL
+      SELECT * FROM students WHERE grade = 10 LIMIT 1
+    SQL
+    DB[:conn].execute(sql).collect do |r|
+      self.new_from_db(r)
+    end.first
+  end
+
+  def self.first_X_students_in_grade_10(x)
+    records = []
+    sql = <<-SQL
+      SELECT * FROM students WHERE grade = 10 LIMIT ?
+    SQL
+    DB[:conn].execute(sql, x).collect do |r|
+      r = self.new_from_db(r)
+      records << r
+    end
+    records
   end
 
   def self.all
@@ -25,22 +54,6 @@ class Student
     SQL
     DB[:conn].execute(ninth_graders, 9)
   end
-
-  # def self.first_X_students_in_grade_10(x)
-  #   sql = <<-SQL
-  #     SELECT * FROM students WHERE grade = ? LIMIT ?
-  #   SQL
-  #   DB[:conn].execute(sql, 10, x)
-  # end
-
-  # def self.first_student_in_grade_10
-  #   sql = <<-SQL
-  #     SELECT * FROM students WHERE grade = 10 LIMIT 1
-  #   SQL
-  #   DB[:conn].execute(sql).collect do |s|
-  #     self.new_from_db(s)
-  #   end
-  # end
 
   def self.students_below_12th_grade
    sql = <<-SQL
