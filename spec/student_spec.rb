@@ -110,7 +110,7 @@ describe Student do
 
         all_but_12th = Student.students_below_12th_grade
         expect(all_but_12th.size).to eq(1)
-        expect(all_but_12th.first.name).to eq('Sam')
+        expect(all_but_12th.first[1]).to eq('Sam')
       end
     end
 
@@ -142,7 +142,7 @@ describe Student do
         jess.name = "Jess"
         jess.grade = 10
         jess.save
-        
+
         first_X_students = Student.first_X_students_in_grade_10(2)
         expect(first_X_students.size).to eq(2), 'Requested first 2 students in grade 10. Expected Array of two elements'
         expect(first_X_students.all? {|student| student.class == Student}).to eq(true), 'Expected Array of Student instances'
