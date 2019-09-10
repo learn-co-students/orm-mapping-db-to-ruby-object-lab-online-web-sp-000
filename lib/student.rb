@@ -68,11 +68,11 @@ class Student
     sql = <<-SQL
       SELECT COUNT(*)
       FROM students
-      WHERE grade = 9;
+      WHERE grade = 9
     SQL
 
     DB[:conn].execute(sql).map do |row|
-      self.new_from_db(row)
+      self.new_from_db(row)               #iterate over each row and use the self.new_from_db method to create a new Ruby object for each row
     end
   end
 
@@ -102,18 +102,19 @@ class Student
     end
   end
 
-  def self.first_X_students_in_grade_10(num)
-    sql = <<-SQL
-      SELECT *
-      FROM students
-      WHERE grade = 10
-      ORDER BY students.id LIMIT 1
-    SQL
+  def self.first_student_in_grade_10
+     sql = <<-SQL
+       SELECT *
+       FROM students
+       WHERE grade = 10
+       ORDER BY students.id LIMIT 1
+     SQL
 
-    DB[:conn].execute(sql, num) do |row|
-      self.new_from_db(row)
-    end
-  end
+     DB[:conn].execute(sql).map do |row|
+       self.new_from_db(row)
+     end.first
+   end
+
 
   def self.all_students_in_grade_X(grade)
     sql = <<-SQL
