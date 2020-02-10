@@ -24,10 +24,12 @@ class Student
       WHERE name = ?
       LIMIT 1 
     SQL
-
+    
+    new_student = nil
     DB[:conn].execute(sql, name).each do |student|
-      self.new_from_db(student)
+      new_student = student
     end 
+    self.new_from_db(new_student)
   end
   
   def save
