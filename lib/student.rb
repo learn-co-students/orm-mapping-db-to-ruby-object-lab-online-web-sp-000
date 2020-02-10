@@ -25,7 +25,7 @@ class Student
       LIMIT 1 
     SQL
 
-    DB[:conn].execute(sql, name).map do |student|
+    DB[:conn].execute(sql, name).each do |student|
       self.new_from_db(student)
     end 
   end
