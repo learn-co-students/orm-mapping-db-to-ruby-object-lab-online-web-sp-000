@@ -1,3 +1,6 @@
+
+
+
 class Student
   attr_accessor :id, :name, :grade
 
@@ -13,6 +16,13 @@ class Student
   def self.all
     # retrieve all the rows from the "Students" database
     # remember each row should be a new instance of the Student class
+    sql = <<-SQL
+      SELECT * FROM students
+    SQL
+
+    DB[:conn].execute(sql).collect do |student|
+      self.new_from_db(student)
+    end 
   end
 
   def self.find_by_name(name)
@@ -31,7 +41,29 @@ class Student
     end 
     self.new_from_db(new_student)
   end
+
+  def self.all_students_in_grade_9
+    sql = <<-SQL 
+      SELECT name FROM students 
+      WHERE grade = 9
+    SQL
+    grade_9_students = [] 
+    DB[:conn].execute(sql).each do |student|
+      grade_9_students << student 
+    end 
+    grade_9_students
+  end 
   
+  def self.students_below_12th_grade 
+    students_below_12th_grade = []
+    self.all.each do |student|
+      if student.grade.to_i < 12 
+        students_below_12th_grade << student 
+      end 
+    end 
+    students_below_12th_grade
+  end 
+
   def save
     sql = <<-SQL
       INSERT INTO students (name, grade) 
@@ -57,4 +89,6 @@ class Student
     sql = "DROP TABLE IF EXISTS students"
     DB[:conn].execute(sql)
   end
+
+
 end
