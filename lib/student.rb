@@ -65,13 +65,19 @@ class Student
   end 
 
   def self.first_X_students_in_grade_10(num_students)
-    student_counter = 0 
-    first_x_students = [] 
-    while student_counter < num_students 
+    # student_counter = 0 
+    # first_x_students = [] 
+    # while student_counter < num_students 
+    #   first_x_students << self.all.select {|student| student.grade.to_i == 10}
+    #   student_counter += 1
+    # end 
+    # first_x_students 
+    first_x_students = []
+    1.upto(num_students) do |student|
       first_x_students << self.all.select {|student| student.grade.to_i == 10}
-      student_counter += 1
     end 
-    self.new_from_db(first_x_student.flatten) 
+    binding.pry 
+    self.new_from_db(first_x_students.flatten)
   end 
 
   def save
