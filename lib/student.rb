@@ -1,6 +1,7 @@
 
 
 
+
 class Student
   attr_accessor :id, :name, :grade
 
@@ -72,12 +73,29 @@ class Student
     #   student_counter += 1
     # end 
     # first_x_students 
+    sql = <<-SQL
+      SELECT * FROM students
+      WHERE grade = 10 
+      LIMIT ?
+    SQL
+    
     first_x_students = []
-    1.upto(num_students) do |student|
-      first_x_students << self.all.select {|student| student.grade.to_i == 10}
-    end 
-    binding.pry 
-    self.new_from_db(first_x_students.flatten)
+      DB[:conn].execute(sql, num_students).each do |student|
+      first_x_students << self.new_from_db(student)
+    end
+    first_x_students
+  end 
+
+  def self.first_student_in_grade_10 
+    sql = <<-SQL
+      SELECT * FROM students
+      WHERE grade = 10 
+      LIMIT 1
+    SQL
+   
+    DB[:conn].execute(sql).map do |row|
+      self.new_from_db(row)
+    end
   end 
 
   def save
