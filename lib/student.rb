@@ -65,14 +65,7 @@ class Student
     students_below_12th_grade
   end 
 
-  def self.first_X_students_in_grade_10(num_students)
-    # student_counter = 0 
-    # first_x_students = [] 
-    # while student_counter < num_students 
-    #   first_x_students << self.all.select {|student| student.grade.to_i == 10}
-    #   student_counter += 1
-    # end 
-    # first_x_students 
+  def self.first_X_students_in_grade_10(num_students) 
     sql = <<-SQL
       SELECT * FROM students
       WHERE grade = 10 
@@ -95,7 +88,18 @@ class Student
    
     DB[:conn].execute(sql).map do |row|
       self.new_from_db(row)
-    end
+    end.first  
+  end 
+
+  def self.all_students_in_grade_X(grade)
+    sql = <<-SQL 
+      SELECT * FROM students 
+      WHERE grade = ?
+    SQL
+
+    DB[:conn].execute(sql,grade).map do |row|
+      self.new_from_db(row)
+    end 
   end 
 
   def save
