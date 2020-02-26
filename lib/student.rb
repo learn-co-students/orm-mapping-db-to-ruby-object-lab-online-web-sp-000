@@ -53,14 +53,17 @@ class Student
     end
   end
 
-  def self.first_X_students_in_grade_10(number)
+  def self.first_X_students_in_grade_10(size)
     sql = <<-SQL
       SELECT *
       FROM students
       WHERE grade = 10
+      ORDER BY id DESC
+      LIMIT ?
     SQL
-    DB[:conn].execute(sql)
-
+    DB[:conn].execute(sql, size).map do |row|
+      self.new_from_db(row)
+    end
   end
 
   def self.first_student_in_grade_10
@@ -82,9 +85,11 @@ class Student
       FROM students
       WHERE grade = ?
     SQL
-    DB[:conn].execute(sql)
+    DB[:conn].execute(sql, grade).map do |row|
+      self.new_from_db(row)
+    end
   end
-  
+
   def save
     sql = <<-SQL
       INSERT INTO students (name, grade)
