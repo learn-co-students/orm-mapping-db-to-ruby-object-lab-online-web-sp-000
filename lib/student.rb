@@ -21,13 +21,10 @@ class Student
     SQL
     students = DB[:conn].execute(sql)
     counter = 0
-    while counter < student.length do
+    while counter < students.length do
         self.new_from_db(students[counter])
-        binfindg.pry
-      # end
+        counter += 1
     end
-   
-
   end
 
   def self.find_by_name(name)
@@ -41,14 +38,12 @@ class Student
   end
   
   def self.all_students_in_grade_9
-
     sql = <<-SQL 
       SELECT students.id, students.name, students.grade 
       FROM students 
       WHERE students.grade = 9
     SQL
     students = DB[:conn].execute(sql)
-    students
   end
 
   def self.students_below_12th_grade
@@ -59,8 +54,15 @@ class Student
       WHERE students.grade < 12
     SQL
     students = DB[:conn].execute(sql)
-    students
-    binding.pry
+    counter = 0
+    while counter < students.length do
+        self.new_from_db(students[counter])
+        counter += 1
+    end
+
+    student = Student.new_from_db(students[0])
+    # binding.pry 
+    student
   end
 
 
