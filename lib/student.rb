@@ -47,26 +47,13 @@ class Student
   end
 
   def self.students_below_12th_grade
-
     sql = <<-SQL 
       SELECT students.id, students.name, students.grade 
       FROM students 
       WHERE students.grade < 12
     SQL
     students = DB[:conn].execute(sql)
-    counter = 0
-    while counter < students.length do
-        self.new_from_db(students[counter])
-        counter += 1
-    end
-
-    student = Student.new_from_db(students[0])
-    # binding.pry 
-    student
   end
-
-
-
 
   def save
     sql = <<-SQL
