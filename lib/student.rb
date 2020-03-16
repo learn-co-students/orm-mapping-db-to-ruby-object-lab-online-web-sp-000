@@ -15,15 +15,12 @@ class Student
   def self.all
     # retrieve all the rows from the "Students" database
     # remember each row should be a new instance of the Student class
-
     sql = <<-SQL
       SELECT * FROM students
     SQL
     students = DB[:conn].execute(sql)
-    counter = 0
-    while counter < students.length do
-        self.new_from_db(students[counter])
-        counter += 1
+    students.collect do |row|
+      Student.new_from_db(row)
     end
   end
 
@@ -53,6 +50,47 @@ class Student
       WHERE students.grade < 12
     SQL
     students = DB[:conn].execute(sql)
+    # binding.pry
+    students.collect do |row|
+      Student.new_from_db(row)
+    end
+  end
+
+  def self.first_X_students_in_grade_10(n)
+    sql = <<-SQL 
+      SELECT students.id, students.name, students.grade 
+      FROM students 
+      WHERE students.grade = 10
+    SQL
+    students = DB[:conn].execute(sql)    
+    out = students[0..n-1]
+    out.collect do |row|
+      Student.new_from_db(row)
+    end
+
+  end
+
+  def self.first_student_in_grade_10
+    sql = <<-SQL 
+      SELECT students.id, students.name, students.grade 
+      FROM students 
+      WHERE students.grade = 10
+      LIMIT 1
+    SQL
+    result = DB[:conn].execute(sql)    
+    Student.new_from_db(result.flatten)
+    # binding.pry
+  end
+
+  def self.all_students_in_grade_X(grade)
+    sql = <<-SQL 
+      SELECT students.id, students.name, students.grade 
+      FROM students 
+      WHERE students.grade = grade
+    SQL
+    binding.pry
+    students = DB[:conn].execute(sql)
+    # binding.pry
   end
 
   def save
