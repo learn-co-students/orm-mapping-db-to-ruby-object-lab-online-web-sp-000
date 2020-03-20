@@ -35,7 +35,7 @@ class Student
     sql = <<-SQL
         SELECT *
         FROM students
-        WHERE students.grade < 12
+        WHERE grade < 12
     SQL
 
     DB[:conn].execute(sql)
@@ -46,10 +46,10 @@ class Student
         SELECT *
         FROM students
         WHERE students.grade = 10
-        LIMIT num
+        LIMIT ?
     SQL
 
-    DB[:conn].execute(sql)
+    DB[:conn].execute(sql, num)
   end
 
   def self.first_student_in_grade_10
@@ -110,7 +110,7 @@ class Student
   end
 
   def self.drop_table
-    sql = DROP TABLE IF EXISTS students
+    sql = "DROP TABLE IF EXISTS students"
     DB[:conn].execute(sql)
   end
 end
