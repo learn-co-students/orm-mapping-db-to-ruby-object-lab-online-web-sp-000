@@ -60,24 +60,62 @@ class Student
     sql = "DROP TABLE IF EXISTS students"
     DB[:conn].execute(sql)
   end
-
+  
   def self.all_students_in_grade_9
-    self.all.map {|s| s if s.grade == "9"}.reject {|ind| ind == nil}
-  end
+    sql = <<-SQL
+    SELECT COUNT(*)
+    FROM students
+    WHERe grade = 9; 
+    SQL
 
+    DB[:conn].execute(sql).map do |row| 
+      self.new_from_db(row)
+    end
+  end
+ 
   def self.students_below_12th_grade
-    self.all.map {|s| s if s.grade.to_i < 12}.reject {|ind| ind == nil}
+    sql = <<-SQL
+      SELECT *
+      FROM students
+      WHERE grade < 12
+    SQL
+
+    DB[:conn].execute(sql).map {|row| self.new_from_db(row)}
   end
 
   def self.first_X_students_in_grade_10(n)
-    self.all[0..n - 1].map {|s| s}
-  end
+    sql = <<-SQL
+      SELECT *
+      FROM students
+      WHERE grade = 10
+      ORDER BY students.id
+      LIMIT ?
+    SQL
 
+    DB[:conn].execute(sql, n).map do |row|
+      self.new_from_db(row)
+    end
+  end
+  
   def self.first_student_in_grade_10
-    self.all.map {|s| s if s.grade == "10"}.reject {|s| s == nil}.first
-  end
+    sql = <<-SQL
+      SELECT *
+      FROM students
+      WHERE grade = 10
+      ORDER BY students.id LIMIT 1
+    SQL
 
+    DB[:conn].execute(sql).map {|row| self.new_from_db(row)}.first
+  end
+ 
   def self.all_students_in_grade_X(grade)
-    self.all.map {|s| s if s.grade.to_i == 10}.reject {|s| s == nil}
+    sql = <<-SQL 
+      SELECT *
+      FROM students
+      WHERE grade = ?
+      ORDER BY students.id
+    SQL
+
+    DB[:conn].execute(sql, grade).map {|row| self.new_from_db(row)}
   end
 end
