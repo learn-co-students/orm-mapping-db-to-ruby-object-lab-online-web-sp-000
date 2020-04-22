@@ -70,10 +70,14 @@ class Student
   end
 
   def self.first_X_students_in_grade_10(n)
-    # Return an array of n objects
-    # use map to return an array
-    # use self.new_from_db
+    self.all[0..n - 1].map {|s| s}
+  end
 
-    # binding.pry
+  def self.first_student_in_grade_10
+    self.all.map {|s| s if s.grade == "10"}.reject {|s| s == nil}.first
+  end
+
+  def self.all_students_in_grade_X(grade)
+    self.all.map {|s| s if s.grade.to_i == 10}.reject {|s| s == nil}
   end
 end
