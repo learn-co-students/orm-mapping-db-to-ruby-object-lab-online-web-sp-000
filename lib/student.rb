@@ -108,8 +108,7 @@ class Student
     LIMIT 1
     SQL
     y=DB[:conn].execute(sql)
-    x = Student.new_from_db(y[0])
-   # binding.pry
+    first_student = Student.new_from_db(y[0])
   end
 
   def self.all_students_in_grade_X(grade)
