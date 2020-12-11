@@ -47,7 +47,7 @@ class Student
     CREATE TABLE IF NOT EXISTS students (
       id INTEGER PRIMARY KEY,
       name TEXT,
-      grade TEXT
+      grade INTEGER
     )
     SQL
 
@@ -60,23 +60,23 @@ class Student
   end
 
   def self.all_students_in_grade_9
-    self.all.select { |student| student.grade == "9" }
+    self.all.select { |student| student.grade == 9 }
   end
 
   def self.students_below_12th_grade
-    self.all.select { |student| student.grade != "12" }
+    self.all.select { |student| student.grade != 12 }
   end
 
   def self.first_X_students_in_grade_10(x)
-    self.all.select { |student| student.grade == "10" }[0, x]
+    self.all.select { |student| student.grade == 10 }[0, x]
   end
 
   def self.first_student_in_grade_10
-    self.all.find { |student| student.grade == "10" }
+    self.all.find { |student| student.grade == 10 }
   end
 
   def self.all_students_in_grade_X(x)
-    self.all.select { |student| student.grade == "#{x}" }
+    self.all.select { |student| student.grade == x }
   end
 
 end
