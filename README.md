@@ -1,4 +1,4 @@
-# ORM Mapping Database Rows to Ruby Objects
+clear# ORM Mapping Database Rows to Ruby Objects
 
 ## Objectives
 
