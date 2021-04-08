@@ -1,6 +1,8 @@
 class Student
   attr_accessor :id, :name, :grade
 
+
+
   def self.new_from_db(row)
     # create a new Student object given a row from the database
     student = self.new
@@ -17,22 +19,31 @@ class Student
     FROM students
     SQL
     # remember each row should be a new instance of the Student class
-    DB[:conn].execute(sql).collect do |row|
-      self.new_from_db(row)
+    DB[:conn].execute(sql).map do |row| self.new_from_db(row)
+    end
   end
 
   def self.find_by_name(name)
     # find the student in the database given a name
-    sql <<-SQL
+    sql = <<-SQL
     SELECT *
     FROM students
     WHERE name = ?
     LIMIT 1
     SQL
     # return a new instance of the Student class
-    DB[:conn].execute(sql, name).map do |row|
-      self.new_from_db(row)
+    DB[:conn].execute(sql, name).map do |row| self.new_from_db(row)
     end.first
+  end
+
+  def self.all_students_in_grade_9
+    sql = <<-SQL
+       SELECT *
+       FROM students
+       WHERE grade = 9
+    SQL
+
+    DB[:conn].execute(sql)
   end
 
   def self.students_below_12th_grade
@@ -46,6 +57,17 @@ class Student
     end
   end
 
+  def self.count_all_students_in_grade_9
+  sql = <<-SQL
+  SELECT *
+  FROM students
+  WHERE students.grade = 9
+  SQL
+  DB[:conn].execute(sql).collect do |row|
+    self.new_from_db(row)
+  end
+end
+
   def self.first_student_in_grade_10
     sql = <<-SQL
     SELECT *
@@ -58,15 +80,29 @@ class Student
     end.first
   end
 
-  def self.count_all_students_in_grade_9
-      sql = <<-SQL
-      SELECT *
-      FROM students
-      WHERE students.grade = 9
-      SQL
-      DB[:conn].execute(sql).collect do |row|
-    self.new_from_db(row)
+
+
+def self.first_X_students_in_grade_10(num)
+    # self.all.select { |s| s.grade == "10"  }[0,num]
+    sql = <<-SQL
+    SELECT * from students
+    where grade = 10
+    LIMIT ?
+    SQL
+
+    DB[:conn].execute(sql, num).map { |r| self.new_from_db(r)  }
+
+
   end
+
+  def self.all_students_in_grade_X(grade)
+    sql = <<-SQL
+       SELECT *
+       FROM students
+       WHERE grade = ?
+    SQL
+
+    DB[:conn].execute(sql, grade)
   end
 
   def save
@@ -94,5 +130,4 @@ class Student
     sql = "DROP TABLE IF EXISTS students"
     DB[:conn].execute(sql)
   end
-end
 end
